@@ -1,0 +1,107 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background:linear-gradient(to right, #78cf0c, #ffe100); 
+ width: 50%;
+ height: 200px;
+}
+
+header {
+    background-color: #cecdcb;
+    padding: 20px;
+    text-align: center;
+}
+
+.logo img {
+   margin:0;
+   padding:0;
+}
+
+h1 {
+    margin: 0;
+    padding:0;
+    font-size:2em;
+    font-weight:bold;
+    color:darkred;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 30px;
+}
+
+h2 {
+    margin-top:20;
+}
+
+ul, ol {
+    margin: 0;
+    padding-left: 20px;
+}
+#services{
+    display:flex;
+}
+#services img{
+    margin-left:100px;
+    margin-right:150px;
+}
+#services h2{
+   margin-top:20px;
+   font-size:3em;
+   font-weight:bold;
+   color:darkred;
+}
+#services ul li{
+    margin-top:10px;
+    font-size:2em;
+   font-weight:bold;
+}
+.terapia h2{
+    margin-top:20px;
+    font-size:2.5em;
+   font-weight:bold;
+    color:darkred;
+}
+.terapia ol li{
+    font-size:1.8em;
+   font-weight:bold;
+}
+.contact h2{
+   margin-top:20px; 
+   font-size:3em;
+   font-weight:bold;
+   color:darkred;
+}
+#contact-form{
+	font-size:2em;
+	font-weight:bold;
+}
+.correo{
+    padding-right:21px;
+}
+.mensajel{
+    
+}
+.tarea{
+    margin-top:20px;
+}
+.boton{
+    margin-top:30px;
+    margin-left:200px;
+    font-size:1em;
+    font-weight:bold;
+    border-radius:10%;
+}
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-container img {
+    max-width: 50%;
+    margin-bottom: 10px;
+}
