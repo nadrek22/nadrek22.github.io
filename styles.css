@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-   background:linear-gradient(to top, #F48FB1, #FFEBEE);    
+   background:linear-gradient(to top,  #fadbd8, #FFEBEE);    
 }
 header {
     background-color: #cecdcb;
@@ -10,12 +10,13 @@ header {
     text-align: left;
     width:460px;
 }
+/*#F48FB1*/
 .logo img {
    margin:0;
    padding:0;
 }
 h1 {
-     margin: 25px;
+    margin: 20px;
     padding:0;
     font-size:2em;
     font-weight:bold;
@@ -84,8 +85,8 @@ ul, ol {
     border-radius:10%;
 }
 .ansiedades li{
-    color:white;
+    color: #34495e ;
 }
 .toxicos li{
-    color:white;
+    color: #34495e ;
 }
