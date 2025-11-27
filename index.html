@@ -3,107 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Psicoterapia</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Juego de Palabras</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.8s ease;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            align-items: flex-start;
+        }
+
+        .score-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .score {
+            background: white;
+            padding: 12px 25px;
+            border-radius: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .errors {
+            background: white;
+            padding: 12px 25px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6b6b;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-give-up {
+            background: #ffa94d;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-give-up:hover {
+            transform: translateY(-2px);
+        }
+
+        .word-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        .letter {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            gap: 15px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            outline: none;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-quit {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-check {
+            background: #51cf66;
+            color: white;
+        }
+
+        .msg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .msg.show {
+            opacity: 1;
+        }
+
+        .msg.ok {
+            background: #51cf66;
+        }
+
+        .msg.no {
+            background: #ff6b6b;
+        }
+
+        .end {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .end.show {
+            display: flex;
+        }
+
+        .end-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .end-box h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .end-box p {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #666;
+        }
+
+        .end-box button {
+            background: #4c6ef5;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <header  style="border:4px solid brown" >
-        <div class="logo">
-            <img src="https://nadrek22.github.io/LogoM.png" alt="Logo" height="200px" width="460px">
+    <div class="container">
+        <div class="header">
+            <div class="score-box">
+                <div class="score">Score: <span id="pts">0</span></div>
+                <div class="errors">Errores: <span id="errs">0</span></div>
+            </div>
+            <button class="btn-give-up" onclick="giveUp()">Me rindo</button>
         </div>
-        <h1 >SALUD Y EDUCACIÓN A.C.</h1>
-    </header>
-    <main>
 
- <img   style="border:4px solid brown" src="https://i.pinimg.com/236x/87/58/b2/8758b29b077f39cc88e8c92aa0c7b356.jpg" height=300 width=470 >
-        <section id="services">
+        <div class="word-area">
+            <div class="circle" id="circle"></div>
+        </div>
 
-<h2>SERVICIOS</h2>
-            <ul>
-                <li>Psicoterapia Individual</li>
-                <li>Psicoterapia de Pareja</li>
-                <li>Psicoterapia Familiar</li>
-            </ul>
-        </section>
-<section class="terapia">
-<img  style="border:4px solid brown" src="https://ethic.es/wp-content/uploads/2021/11/Copy-of-Unnamed-Design-43.png" height=300 width=470>     
-            <h2>Beneficios de la Terapia</h2>
-            <ol>
-                <li>Mejora la salud mental y emocional.</li>
-                <li>Proporciona herramientas para afrontar problemas.</li>
-                <li>Facilita el desarrollo personal y la autoconciencia.</li>
-                <li>Fortalece las relaciones interpersonales.</li>
-                <li>Ayuda a encontrar soluciones a conflictos.</li>
-            </ol>
-        </section>
-        <section id="gallery">
-<img  style="border:4px solid brown" src="https://cdn.pixabay.com/photo/2022/08/17/20/00/psychotherapy-7393379_640.png" height=300 width=470>            
-        </section>
+        <div class="footer">
+            <button class="btn-quit" onclick="quit()">Abandonar</button>
+            <input type="text" id="inp" placeholder="Escribe la palabra...">
+            <button class="btn-check" onclick="check()">Continuar</button>
+        </div>
+    </div>
 
-      <h2 style="color: brown">MANEJE SU ANSIEDAD</h2>
+    <div class="msg" id="msg"></div>
+    <div class="end" id="end">
+        <div class="end-box">
+            <h2>¡Juego Terminado!</h2>
+            <p>Puntuación: <span id="final">0</span></p>
+            <button onclick="location.reload()">Jugar de Nuevo</button>
+        </div>
+    </div>
 
-      <ul style="font-weight:bold" class="ansiedades">
-        <li>SUDORACIÓN</li>
-        <li>INTRANQUILIDAD</li>
-        <li>TAQUICARDIA</li>
-        <li>SUEÑO INSATISFACTORIO</li>
-        <li>EXCESO O DISMINUCIÓN DE APETITO</li>
-        <li>DESESPERACIÓN</li>
-        <li>TEMORES</li>
-      </ul>  
+    <script>
+        const words = ['ABACO','ABAJO','ABEJA','ABIERTO','ABISMO','ABOGADO','ABRAZO','ABRIGO','ABRIL','ABUELA','ABUELO','ACASO','ACEITE','ACENTO','ACEPTAR','ACERO','ACIDO','ACIERTO','ACORDE','ACTOR','ACTRIZ','ACTUAL','ACUDIR','ADAPTAR','ADELANTE','ADEMAS','ADENTRO','ADIOS','ADIVINAR','ADMIRAR','ADMITIR','ADOBE','ADOPTAR','ADORAR','ADORNO','ADULTO','AEREO','AFECTO','AFEITAR','AFICION','AFINAR','AFIRMAR','AFRICA','AFUERA','AGACHAR','AGARRAR','AGENCIA','AGENDA','AGENTE','AGIL','AGITAR','AGONIA','AGOSTO','AGOTAR','AGREGAR','AGRICOLA','AGRIO','AGUA','AGUANTE','AGUARDAR','AGUDO','AGUILA','AGUJA','AGUJERO','AHIJADO','AHOGADO','AHORA','AHORRAR','AHUMAR','AIRE','AJEDREZ','AJENO','AJUSTAR','ALAMBRE','ALARGAR','ALARMA','ALBA','ALBAÑIL','ALBUM','ALCALDE','ALCANCE','ALCOHOL','ALDEA','ALEGRAR','ALEGRE','ALEGRIA','ALEJAR','ALEMAN','ALERTA','ALETA','ALFILER','ALFOMBRA','ALGEBRA','ALGO','ALGODON','ALGUIEN','ALGUNO','ALIADO','ALIENTO','ALIVIAR','ALIVIO','ALLA','ALMA','ALMENDRA','ALMOHADA','ALMORZO','ALQUILAR','ALREDEDOR','ALTAR','ALTERAR','ALTEZA','ALTURA','ALUMINIO','ALUMNO','ALZAR','AMABLE','AMANECER','AMANTE','AMAR','AMARGO','AMARILLO','AMASAR','AMBICION','AMBIENTE','AMBOS','AMENAZA','AMERICA','AMIGO','AMISTAD','AMOR','AMPARO','AMPLIO','ANADIR','ANCIANO','ANCLA','ANCHO','ANDAR','ANDEN','ANGEL','ANGULO','ANILLO','ANIMAL','ANIMO','ANOCHE','ANOTAR','ANSIA','ANTEAYER','ANTERIOR','ANTES','ANTIGUO','ANUAL','ANULAR','ANUNCIAR','ANUNCIO','ANZUELO','AÑADIR','APARECER','APARENTE','APARTAR','APARTE','APELLIDO','APENAS','APERTURA','APETECER','APIO','APLASTAR','APLAUDIR','APLAUSO','APLICAR','APODAR','APODO','APOYAR','APOYO','APRECIAR','APRENDER','APRETAR','APROBAR','APROVECHAR','APUESTA','APUNTAR','APUNTE','APURAR','APURO','AQUEL','AQUELLA','AQUELLO','AQUI','ARADO','ARAÑA','ARAÑAR','ARBOL','ARCO','ARDER','ARDILLA','ARDOR','AREA','ARENA','ARENQUE','ARGUMENTO','ARIDO','ARMA','ARMADURA','ARMAR','ARMARIO','ARMONIA','AROMA','ARPA','ARPILLERA','ARRABAL','ARRASAR','ARRASTRAR','ARREBATAR','ARREGLAR','ARREGLO','ARRIBA','ARRIENDO','ARRIESGAR','ARRIMAR','ARRODILLAR','ARROJAR','ARROYO','ARROZ','ARRUGA','ARRUGAR','ARRUINAR','ARTE','ARTERIA','ARTICULO','ARTIFICIAL','ARTISTA','ASADO','ASALTAR','ASALTO','ASAMBLEA','ASAR','ASCENDER','ASCENSO','ASCENSOR','ASCO','ASEAR','ASEGURAR','ASEMEJAR','ASENTIR','ASEO','ASESINAR','ASESOR','ASFALTO','ASIA','ASIENTO','ASILO','ASIR','ASISTIR','ASNO','ASOLAR','ASOMAR','ASOMBRAR','ASOMBRO','ASPECTO','ASPERO','ASPIRAR','ASQUEROSO','ASTA','ASTILLA','ASTRO','ASTUTO','ASUMIR','ASUNTO','ASUSTAR','ATACAR','ATAJO','ATAQUE','ATAR','ATARDECER','ATASCO','ATAUD','ATENCION','ATENDER','ATENTO','ATERRAR','ATESORAR','ATESTAR','ATLETICO','ATMOSFERA','ATOMO','ATONTADO','ATORMENTAR','ATRACAR','ATRACTIVO','ATRAER','ATRAPAR','ATRAS','ATRASAR','ATRASO','ATRAVESAR','ATREVER','ATREVIDO','ATRIBUIR','ATRIO','ATROPELLAR','ATROZ','ATUN','AUDACIA','AUDAZ','AUDICION','AUDIENCIA','AUGE','AUGURIO','AULA','AUMENTAR','AUMENTO','AUNQUE','AURORA','AUSENCIA','AUSENTE','AUSTERO','AUSTRIA','AUTENTICO','AUTO','AUTOBUS','AUTOR','AUTORIDAD','AUXILIAR','AUXILIO','AVANCE','AVANZAR','AVARICIA','AVARO','AVASALLAR','AVENIDA','AVENTURA','AVERGONZAR','AVERIA','AVERIGUAR','AVESTRUZ','AVIADOR','AVION','AVISAR','AVISO','AVISPA','AVISPADO','AYER','AYUDA','AYUDAR','AYUNAR','AYUNO','AZADA','AZAFATA','AZAHAR','AZAR','AZOGUE','AZOTAR','AZOTE','AZUCAR','AZUFRE','AZUL','AZULEJO','BABA','BABERO','BABOR','BACALAO','BACHE','BACTERIA','BACULO','BAHIA','BAILAR','BAILARIN','BAILE','BAJAR','BAJEZA','BAJO','BALA','BALANCE','BALANZA','BALAR','BALAZO','BALCON','BALDE','BALDIO','BALSA','BALLENA','BAMBU','BANANO','BANCA','BANCO','BANDA','BANDEJA','BANDERA','BANDIDO','BANDO','BANQUERO','BANQUETE','BAÑAR','BAÑO','BAQUETA','BARAJA','BARATO','BARBA','BARBARIE','BARBARO','BARBERO','BARBILLA','BARCO','BARDA','BARNIZ','BARRA','BARRANCA','BARRER','BARRERA','BARRICA','BARRIGA','BARRIL','BARRIO','BARRO','BARROCO','BARROTE','BARTULOS','BARULLO','BASA','BASAR','BASCA','BASCULA','BASE','BASICO','BASILICA','BASTA','BASTANTE','BASTAR','BASTARDO','BASTO','BASTON','BASURA','BATA','BATALLA','BATALLON','BATATA','BATEA','BATERIA','BATIR','BATUTA','BAUL','BAUTISMO','BAUTIZAR','BAYETA','BAYO','BAZA','BAZAR','BAZO','BAZOFIA','BEATITUD','BEATO','BEBE','BEBER','BEBIDA','BECA','BECERRO','BEDEL','BELEN','BELGA','BELGICA','BELLACO','BELLEZA','BELLO','BELLOTA','BENDECIR','BENDITO','BENEFICIO','BENEVOLO','BENIGNO','BERZA','BESAR','BESO','BESTIA','BESUGO','BETUN','BIBLIA','BICICLETA','BICHO','BIEN','BIENIO','BIENVENIDA','BIFURCAR','BIGOTE','BILLAR','BILLETE','BINARIO','BIOGRAFIA','BIOMBO','BIRLAR','BIRRETE','BISABUELO','BISIESTO','BISONTE','BISTEC','BIZCO','BIZCOCHO','BLANCO','BLANCURA','BLANDIR','BLANDO','BLANQUEAR','BLASFEMAR','BLASON','BLEDO','BLINDAR','BLOQUE','BLOQUEAR','BLOQUEO','BLUSA','BOATO','BOBADA','BOBINA','BOBO','BOCA','BOCADO','BOCETO','BOCHORNO','BOCINA','BODA','BODEGA','BOFE','BOFETON','BOGA','BOGAR','BOHEMIO','BOINA','BOLA','BOLERO','BOLETA','BOLETIN','BOLETO','BOLICHE','BOLLO','BOLO','BOLSA','BOLSILLO','BOLSO','BOMBA','BOMBARDEAR','BOMBERO','BOMBILLA','BOMBO','BOMBON','BONANZA','BONDAD','BONDADOSO','BONITO','BONO','BOÑIGA','BOQUEAR','BOQUETE','BORBOTAR','BORDA','BORDAR','BORDE','BORDEAR','BORDO','BORLA','BORRACHERA','BORRACHO','BORRADOR','BORRAR','BORRASCA','BORREGO','BORRICO','BORRON','BORROSO','BOSQUE','BOSQUEJAR','BOSQUEJO','BOSTEZAR','BOTA','BOTANICA','BOTAR','BOTE','BOTELLA','BOTICA','BOTIN','BOTON','BOVEDA','BOXEAR','BOXEO','BOYA','BOYERO','BOZAL','BOZO','BRACERO','BRAMAR','BRAMIDO','BRASA','BRASERO','BRASIL','BRAVATA','BRAVO','BRAVURA','BRAZA','BRAZALETE','BRAZO','BREA','BRECHA','BREGAR','BREVE','BREVEDAD','BREZAL','BREZO','BRIBON','BRIDA','BRIGADA','BRILLANTE','BRILLAR','BRILLO','BRINCAR','BRINCO','BRINDAR','BRINDIS','BRIO','BRIOSO','BRISA','BRITANICO','BRIZNA','BROCA','BROCHA','BROCHE','BROMA','BROMEAR','BROMISTA','BRONCA','BRONCE','BRONCO','BROTAR','BROTE','BRUCES','BRUJA','BRUJO','BRUJULA','BRUMA','BRUÑIR','BRUSCO','BRUTAL','BRUTO','BUCAL','BUCEAR','BUCLE','BUCHE','BUDISMO','BUENO','BUEY','BUFALO','BUFANDA','BUFAR','BUFETE','BUFIDO','BUFO','BUFON','BUHARDILLA','BUHO','BUITRE','BUJIA','BULA','BULBO','BULTO','BULLA','BULLIR','BUÑUELO','BUQUE','BURBUJA','BURDO','BURGUES','BURLA','BURLAR','BURLON','BURO','BURRO','BUSCA','BUSCAR','BUSTO','BUTACA','BUZO','CABAL','CABALA','CABALGADURA','CABALGAR','CABALGATA','CABALLA','CABALLERO','CABALLO','CABAÑA','CABARET','CABECEAR','CABECERA','CABECILLA','CABELLERA','CABELLO','CABER','CABESTRILLO','CABESTRO','CABEZA','CABEZADA','CABEZAL','CABEZAZO','CABIDA','CABILDO','CABINA','CABIZBAJO','CABLE','CABO','CABRA','CABRIO','CABRIOLA','CABRIOLET','CABRITO','CACAO','CACAREAR','CACERIA','CACEROLA','CACHARRO','CACHAZA','CACHEAR','CACHIVACHE','CACHO','CACHORRO','CACIQUE','CACO','CACTO','CADA','CADALSO','CADAVER','CADENA','CADERA','CADETE','CADUCAR','CADUCO','CAER','CAFE','CAFETAL','CAFETERA','CAFRE','CAGAR','CAIDA','CAIMAN','CAJA','CAJERO','CAJON','CAL','CALA','CALABAZA','CALADO','CALAMAR','CALAMBRE','CALAMIDAD','CALAR','CALAVERA','CALCAR','CALCE','CALCETA','CALCETERIA','CALCETIN','CALCINAR','CALCIO','CALCO','CALCULAR','CALDERA','CALDERILLA','CALDERO','CALDO','CALEFACCION','CALENDARIO','CALENTAR','CALENTURA','CALERA','CALESA','CALIBRAR','CALIBRE','CALIDAD','CALIDO','CALIENTE','CALIFICAR','CALIZ','CALIZA','CALMA','CALMAR','CALMOSO','CALO','CALOR','CALUMNIA','CALUMNIAR','CALUROSO','CALVA','CALVARIO','CALVICIE','CALVO','CALZA','CALZADO','CALZAR','CALZON','CALLAR','CALLE','CALLEJON','CALLO','CAMA','CAMADA','CAMALEON','CAMARA','CAMARADA','CAMARERO','CAMARILLA','CAMARIN','CAMAROTE','CAMASTRO','CAMBIAR','CAMBIO','CAMBISTA','CAMELAR','CAMELLO','CAMILLA','CAMINAR','CAMINO','CAMION','CAMISA','CAMISETA','CAMORRA','CAMOTE','CAMPAMENTO','CAMPANA','CAMPANARIO','CAMPANILLA','CAMPEON','CAMPESINO','CAMPIÑA','CAMPO','CAMUFLAJE','CANAL','CANALLA','CANAPE','CANARIO','CANASTA','CANASTO','CANCEL','CANCELAR','CANCER','CANCHA','CANCION','CANDADO','CANDELA','CANDELERO','CANDENTE','CANDIDATO','CANDIDO','CANDIL','CANDOR','CANELA','CANGREJO','CANIBAL','CANICA','CANILLA','CANINO','CANJE','CANO','CANOA','CANON','CANONIGO','CANSADO','CANSAR','CANSINO','CANTAR','CANTARO','CANTERA','CANTIDAD','CANTIMPLORA','CANTINA','CANTO','CANTOR','CAÑA','CAÑADA','CAÑAMO','CAÑAVERAL','CAÑERIA','CAÑO','CAÑON','CAOBA','CAOS','CAPA','CAPACIDAD','CAPADO','CAPAR','CAPARAZON','CAPATAZ','CAPAZ','CAPCION','CAPEAR','CAPILLA','CAPITAL','CAPITAN','CAPITULO','CAPON','CAPORAL','CAPOTA','CAPOTE','CAPRICHO','CAPTAR','CAPTURA','CAPTURAR','CAPUCHA','CAPULLO','CARA','CARABINA','CARACOL','CARACTER','CARAMELO','CARATULA','CARAVANA','CARBON','CARBONERO','CARBONO','CARBUNCLO','CARCAJADA','CARCEL','CARCELERO','CARCOMA','CARDAR','CARDENAL','CARDENILLO','CARDILLO','CARDO','CAREAR','CARECER','CARENCIA','CARENTE','CAREO','CARESTIA','CARETA','CARGA','CARGAR','CARGO','CARIÑO','CARINO','CARIDAD','CARIES','CARITATIVO','CARIZ','CARMESI','CARMIN','CARNAL','CARNAZA','CARNE','CARNERO','CARNET','CARNICERIA','CARNICERO','CARNIVORO','CARNOSO','CARO','CARPA','CARPETA','CARPINTERO','CARRASPERA','CARRERA','CARRETA','CARRETE','CARRETERO','CARRETERA','CARRETILLA','CARRETON','CARRIL','CARRILLO','CARRO','CARROÑA','CARROZA','CARRUAJE','CARTA','CARTEL','CARTERA','CARTERO','CARTILAGOS','CARTILLA','CARTON','CARTULINA','CASA','CASACA','CASAR','CASARSE','CASCABEL','CASCADA','CASCAR','CASCARA','CASCO','CASERO','CASETA','CASI','CASILLA','CASINO','CASO','CASPA','CASQUILLO','CASTA','CASTAÑA','CASTAÑAR','CASTAÑO','CASTELLANO','CASTIGAR','CASTIGO','CASTILLO','CASTIZO','CASTO','CASTOR','CASTRA','CASTRAR','CASUAL','CASUALIDAD','CASULLA','CATAR','CATARRO','CATASTROFE','CATEAR','CATEGORIA','CATETO','CATOLICISMO','CATOLICO','CATORCE','CATRE','CAUCE','CAUCHO','CAUDAL','CAUDILLO','CAUSA','CAUSAR','CAUSTICO','CAUTELA','CAUTIVAR','CAUTIVERIO','CAUTIVO','CAUTO','CAVA','CAVAR','CAVERNA','CAVIDAD','CAYADO','CAZA','CAZADOR','CAZAR','CAZO','CAZUELA','CEBADA','CEBAR','CEBO','CEBOLLA','CEBRA','CECEAR','CECEO','CECINA','CEDER','CEDRO','CEDULA','CEGAR','CEGATO','CEGUERA','CEJA','CEJAR','CELADA','CELADOR','CELAJE','CELAR','CELDA','CELEBRAR','CELEBRE','CELERIDAD','CELESTE','CELESTIAL','CELIBATO','CELIBE','CELO','CELOSIA','CELOSO','CELULA','CELULAR','CEMENTERIO','CEMENTO','CENA','CENAGAL','CENAR','CENCERRO','CENEFA','CENICERO','CENIZA','CENSO','CENSOR','CENSURA','CENSURAR','CENTELLA','CENTELLAR','CENTENA','CENTENAR','CENTENARIO','CENTENO','CENTESIMO','CENTINELA','CENTRAL','CENTRAR','CENTRICO','CENTRO','CEÑIR','CEÑO','CEPA','CEPILLAR','CEPILLO','CEPO','CERA','CERAMICA','CERCA','CERCANIA','CERCANO','CERCAR','CERCENAR','CERCIORAR','CERCO','CERDA','CERDO','CEREAL','CEREBRAL','CEREBRO','CEREMONIA','CEREZA','CEREZO','CERILLA','CERNER','CERNIR','CERO','CERQUILLO','CERRADO','CERRADURA','CERRAJERO','CERRAR','CERRO','CERROJO','CERTAMEN','CERTERO','CERTEZA','CERTIFICAR','CERVATILLO','CERVATO','CERVECERIA','CERVEZA','CERVIZ','CESAR','CESPED','CESTA','CESTERIA','CESTO','CETRERO','CETRO','CIANURO','CICATRIZ','CICLON','CICUTA','CIDRA','CIEGO','CIELO','CIEN','CIENCIA','CIENO','CIENTO','CIERRE','CIERTO','CIERVO','CIERZO','CIFRA','CIFRAR','CIGARRA','CIGARRILLO','CIGARRO','CIGUEÑA','CILANTRO','CILICIO','CILINDRO','CIMA','CIMERA','CIMIENTO','CINCEL','CINCELAR','CINCHA','CINCHAR','CINCO','CINCUENTA','CINE','CINEASTA','CINTA','CINTO','CINTURA','CINTURON','CIÑENDO','CIÑERSE','CIPRES','CIRCO','CIRCUITO','CIRCULAR','CIRCULO','CIRCUNDAR','CIRIO','CIRUELA','CIRUELO','CIRUGIA','CIRUJANO','CISMA','CISNE','CISTERNA','CITA','CITAR','CITARA','CIUDAD','CIUDADANO','CIVICO','CIVIL','CIVILIZAR','CIZAÑA','CLAMAR','CLAMOR','CLAN','CLANDESTINO','CLARA','CLAREAR','CLARETE','CLARIDAD','CLARIN','CLARINETE','CLARO','CLASE','CLASICO','CLASIFICAR','CLAUDICAR','CLAUSTRO','CLAUSULA','CLAUSURA','CLAVA','CLAVADO','CLAVAR','CLAVE','CLAVEL','CLAVERO','CLAVIJA','CLAVO','CLEMENCIA','CLEMENTE','CLERECIA','CLERIGO','CLERO','CLIENTE','CLIMA','CLINICA','CLIPPER','CLOACA','CLOQUEAR','CLORO','CLUB','CLUECO','COACCION','COAGULAR','COALICION','COARTADA','COARTAR','COBA','COBARDE','COBARDIA','COBERTIZO','COBERTOR','COBIJA','COBIJAR','COBRAR','COBRE','COBRO','COCA','COCCION','COCER','COCIDO','COCINA','COCINAR','COCINERO','COCO','COCODRILO','COCOTERO','COCTEL','COCHE','COCHERA','COCHERO','COCHINO','CODA','CODAZO','CODEAR','CODICIA','CODICIAR','CODICILO','CODICIOSO','CODIGO','CODO','CODORNIZ','COETANEO','COFRADE','COFRADIA','COFRE','COGER','COGIDA','COGIDO','COGOLLO','COGOTE','COHABITAR','COHECHAR','COHECHO','COHERENTE','COHESION','COHETE','COHIBIR','COHOMBRO','COHORTE','COINCICIR','COINCIDIR','COITO','COJEAR','COJERA','COJIN','COJO','COL','COLA','COLABORAR','COLADA','COLADOR','COLAR','COLATERAL','COLCHA','COLCHON','COLEAR','COLECCION','COLECTA','COLECTOR','COLEGA','COLEGIAL','COLEGIO','COLERA','COLERICO','COLETA','COLETAZO','COLGADO','COLGADOR','COLGADURA','COLGAJO','COLGANTE','COLGAR','COLIBRI','COLICO','COLIFLOR','COLILLA','COLINA','COLINDANTE','COLINDAR','COLISION','COLMAR','COLMENA','COLMILLO','COLMO','COLOCAR','COLOFON','COLOMBIANO','COLON','COLONIA','COLONIAL','COLONIZAR','COLONO','COLOQUIO','COLOR','COLORAR','COLOREAR','COLORETE','COLORIDO','COLOSAL','COLOSO','COLUMNA','COLUMPIAR','COLUMPIO','COLLADO','COLLAR','COMADRE','COMADREAR','COMADRONA','COMADRON','COMANDO','COMARCA','COMBA','COMBADURA','COMBAR','COMBATE','COMBATIR','COMBINACION','COMBINAR','COMBO','COMBURENTE','COMEDIA','COMEDIANTE','COMEDIDO','COMEDIR','COMEDOR','COMENSAL','COMENTAR','COMENTARIO','COMENZAR','COMER','COMERCIAL','COMERCIAR','COMERCIO','COMERSE','COMESTIBLE','COMETA','COMETER','COMETIDO','COMEZÓN','COMIBLE','COMICO','COMIDA','COMIENZO','COMILON','COMINO','COMISION','COMISURA','COMITIVA','COMITE','COMO','COMODIDAD','COMODO','COMOQUIER','COMPACTO','COMPADRE','COMPAÑERO','COMPAÑIA','COMPARAR','COMPARECER','COMPARSA','COMPARTE','COMPARTIR','COMPAS','COMPASION','COMPASIVO','COMPATIBLE','COMPATRIOTA','COMPELER','COMPENDIO','COMPENSAR','COMPETENCIA','COMPETENTE','COMPETIDOR','COMPETIR','COMPILAR','COMPLACER','COMPLEJO','COMPLEMENTO','COMPLETAR','COMPLETO','COMPLICE','COMPLICIDAD','COMPLOT','COMPONENDA','COMPONER','COMPOSTURA','COMPOTA','COMPRA','COMPRADOR','COMPRAR','COMPRENDER','COMPRESA','COMPRIMIDO','COMPRIMIR','COMPROBAR','COMPROMETER','COMPROMISO','COMPUERTA','COMPUESTO','COMPULSAR','COMPUNGIDO','COMPUNGIR','COMPUTAR','COMULGAR','COMULGATORIO','COMUN','COMUNA','COMUNICAR','COMUNIDAD','COMUNION','CONCADENAR','CONCAVIDAD','CONCAVO','CONCEBIR','CONCEDER','CONCEJAL','CONCEJO','CONCENTRAR','CONCENTO','CONCEPTO','CONCERNIR','CONCERTAR','CONCESION','CONCHA','CONCIENCIA','CONCIERTO','CONCILIAR','CONCILIO','CONCISO','CONCITAR','CONCLAVE','CONCLUIR','CONCLUSION','CONCORDAR','CONCORDATO','CONCORDIA','CONCRETAR','CONCRETO','CONCUBINA','CONCULCAR','CONCURRIR','CONCURSO','CONCUSION','CONDADO','CONDE','CONDENA','CONDENAR','CONDENSAR','CONDESA','CONDICION','CONDICIONAL','CONDIMENTAR','CONDIMENTO','CONDISCIPULO','CONDOLENCIA','CONDOLERSE','CONDOMINIO','CONDONAR','CONDOR','CONDUCCION','CONDUCIR','CONDUCTA','CONDUCTO','CONDUCTOR','CONDUMIO','CONDUZCA','CONECTAR','CONEJERA','CONEJILLO','CONEJO','CONEXION','CONEXO','CONFABULAR','CONFECCION','CONFECCIONAR','CONFEDERACION','CONFERENCIA','CONFERIR','CONFESAR','CONFESION','CONFESIONARIO','CONFESOR','CONFETI','CONFIADO','CONFIANZA','CONFIAR','CONFIDENCIA','CONFIDENTE','CONFIGURAR','CONFIN','CONFINAR','CONFIRMAR','CONFISCAR','CONFITE','CONFITERIA','CONFITERO','CONFITURA','CONFLICTO','CONFLUIR','CONFORMAR','CONFORME','CONFORMIDAD','CONFORT','CONFORTAR','CONFRATERNIDAD','CONFRONTAR','CONFUNDIR','CONFUSO','CONFUTAR','CONGELAR','CONGENIAR','CONGENITO','CONGESTION','CONGESTIONAR','CONGOJA','CONGRACIAR','CONGRATULAR','CONGREGAR','CONGRESO','CONGRIO','CONGRUENCIA','CONGRUENTE','CONJETURA','CONJETURAR','CONJUGAR','CONJUNCION','CONJUNTO','CONJURA','CONJURAR','CONJURO','CONLLEVAR','CONMEMORAR','CONMIGO','CONMINAR','CONMISERACION','CONMOCION','CONMOVER','CONMUTAR','CONNIVENCIA','CONNOTACION','CONO','CONOCEDOR','CONOCER','CONOCIDO','CONOCIMIENTO','CONQUISTA','CONQUISTADOR','CONQUISTAR','CONSABIDO','CONSAGRAR','CONSANGUINEO','CONSCIENCIA','CONSCIENTE','CONSECUCION','CONSECUENCIA','CONSECUTIVO','CONSEGUIR','CONSEJA','CONSEJERO','CONSEJO','CONSENSO','CONSENTIR','CONSERJE','CONSERVA','CONSERVAR','CONSERVATORIO','CONSIDERABLE','CONSIDERACION','CONSIDERAR','CONSIGNA','CONSIGNAR','CONSIGO','CONSIGUIENTE','CONSISTIR','CONSOLA','CONSOLAR','CONSOLIDAR','CONSONANCIA','CONSONANTE','CONSORCIO','CONSORTE','CONSPICUO','CONSPIRAR','CONSTANCIA','CONSTANTE','CONSTAR','CONSTATAR','CONSTELACION','CONSTERNAR','CONSTIPAR','CONSTITUIR','CONSTITUTIVO','CONSTITUYENTE','CONSTREÑIR','CONSTRUCCION','CONSTRUIR','CONSUELO','CONSUL','CONSULADO','CONSULTAR','CONSULTA','CONSULTORIO','CONSUMAR','CONSUMICION','CONSUMIDOR','CONSUMIR','CONSUMO','CONSUNCION','CONSUNO','CONTABILIDAD','CONTACTO','CONTADO','CONTADOR','CONTADURIA','CONTAGIAR','CONTAGIO','CONTAGIOSO','CONTAMINAR','CONTAR','CONTEMPLAR','CONTEMPORANEO','CONTENCIOSO','CONTENDER','CONTENER','CONTENIDO','CONTENTA','CONTENTAR','CONTENTO','CONTERTULIO','CONTESTACION','CONTESTAR','CONTIENDA','CONTIGO','CONTIGUO','CONTINENCIA','CONTINENTAL','CONTINENTE','CONTINGENCIA','CONTINGENTE','CONTINUACION','CONTINUAR','CONTINUO','CONTONEARSE','CONTONEO','CONTORNAR','CONTORNO','CONTORSION','CONTRA','CONTRAATACAR','CONTRABAJO','CONTRABANDO','CONTRACCION','CONTRADECIR','CONTRAER','CONTRAHACER','CONTRALOR','CONTRALTO','CONTRAORDEN','CONTRAPESO','CONTRAPONER','CONTRARIEDAD','CONTRARIO','CONTRARRESTAR','CONTRASENTIDO','CONTRASTAR','CONTRASTE','CONTRATAR','CONTRATIEMPO','CONTRATISTA','CONTRATO','CONTRAVENIR','CONTRIBUIR','CONTRICION','CONTRINCANTE','CONTRISTAR','CONTRITO','CONTROL','CONTROLAR','CONTROVERSIA','CONTUBERNIO','CONTUMACIA','CONTUMAZ','CONTUMELIA','CONTUNDENTE','CONTURBAR','CONTUSION','CONTUSO','CONVALECENCIA','CONVALECER','CONVALIDAR','CONVECINO','CONVENCER','CONVENIENCIA','CONVENIENTE','CONVENIR','CONVENTO','CONVERGIR','CONVERSAR','CONVERSION','CONVERSO','CONVERTIR','CONVEXO','CONVICCION','CONVICTO','CONVIDAR','CONVIENE','CONVINCENTE','CONVITE','CONVIVIR','CONVOCAR','CONVOY','CONVULSION','CONYUGAL','CONYUGE','COÑA','COÑAC','COOPERAR','COORDENADA','COORDINAR','COPA','COPAR','COPETE','COPIA','COPIAR','COPIOSO','COPISTA','COPLA','COPO','COPROPIETARIO','COQUETA','COQUETEAR','COQUETERIA','COQUETO','CORAJE','CORAL','CORAMBRE','CORAZA','CORAZON','CORAZONADA','CORBATA','CORCOVA','CORCOVEAR','CORCHETE','CORCHO','CORDEL','CORDERO','CORDIAL','CORDIALIDAD','CORDILLERA','CORDOBA','CORDOBAN','CORDON','CORDURA','COREA','COREAR','COREOGRAFIA','CORNADA','CORNADURA','CORNAMENTA','CORNAMUSA','CORNEJA','CORNETA','CORNISA','CORO','COROLA','CORONA','CORONAR','CORONEL','CORONILLA','CORPORAL','CORPORATIVO','CORPOREO','CORPULENTO','CORPUS','CORRAL','CORREA','CORRECCION','CORRECTO','CORRECTOR','CORREDERA','CORREDERO','CORREDOR','CORREGIDOR','CORREGIR','CORREO','CORRER','CORRERIA','CORRESPONDENCIA','CORRESPONDER','CORRETAJE','CORREVEDILE','CORRIDA','CORRIDO','CORRIENTE','CORRILLO','CORRO','CORROBORAR','CORROER','CORROMPER','CORROSION','CORROSIVO','CORRUGAR','CORRUPCION','CORRUPTO','CORRUPTOR','CORSARIO','CORSE','CORTADURA','CORTANTE','CORTAR','CORTE','CORTEDAD','CORTEJAR','CORTEJO','CORTES','CORTESANO','CORTESIA','CORTEZA','CORTIJO'];
+        
+        const bgs = [
+            'linear-gradient(135deg, #ffecd2, #fcb69f)',
+            'linear-gradient(135deg, #a1c4fd, #c2e9fb)',
+            'linear-gradient(135deg, #fbc2eb, #a6c1ee)',
+            'linear-gradient(135deg, #fdcbf1, #e6dee9)',
+            'linear-gradient(135deg, #a8edea, #fed6e3)',
+            'linear-gradient(135deg, #ffd3a5, #fd6585)',
+            'linear-gradient(135deg, #d299c2, #fef9d7)',
+            'linear-gradient(135deg, #cfd9df, #e2ebf0)'
+        ];
 
-<h2 style="color:brown">¿TIENE UNA PAREJA TÓXICA?</h2>
- <!--     <h2>De 11:30 a 13:30 hrs.</h2> -->
-      <ul style="font-weight:bold" class="toxicos">
-        <li>CONTROL</li>
-        <li>MENTIRAS</li>
-        <li>CHANTAJE</li>
-        <li>JUICIOS INADECUADOS</li>
-        <li>MANIPULACIÓN</li>
-        <li>INFIDELIDAD</li>
-        <li>MALTRATO PSICOLÓGICO</li>
-        <li>MALTRATO ECONÓMICO</li>
-        <li>MALTRATO EMOCIONAL</li>
-      </ul>  
+        let word = '';
+        let pts = 0;
+        let errs = 0;
+        let bgIdx = 0;
 
-<h2 style="color:brown">PSICOTERAPIA</h2>
-<h3 style="color: #34495e ">Presencial y en línea<br>
-Individual   Pareja   Familia<br>
-niños adolescentes adultos</h3>
+        function shuffle(w) {
+            let a = w.split('');
+            for (let i = a.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a.join('');
+        }
 
-<h2 style="color:brown">TRANSTORNOS POR:</h2>
-<h3 style="color: #34495e "> ANSIEDAD- DEPRESION<br>
-CONFLICTOS EMOCIONALES<br>
-DUELOS - PERDIDAS<br>
-PROBLEMAS DE PAREJA</h3>
+        function show() {
+            word = words[Math.floor(Math.random() * words.length)];
+            let mix = shuffle(word);
+            let c = document.getElementById('circle');
+            c.innerHTML = '';
 
-<h2 style="color:brown">TALLERES</h2>
-<h3 style="color: #34495e ">Presenciales y en línea</h3>
+            let r = 125;
+            let step = (2 * Math.PI) / mix.length;
 
-<h3 style="color: #34495e ">"Disfruta tu vida, disminuye
-la ansiedad"
-Inicia: jueves 11 de abril</h3>
+            for (let i = 0; i < mix.length; i++) {
+                let d = document.createElement('div');
+                d.className = 'letter';
+                d.textContent = mix[i];
+                
+                let ang = i * step - Math.PI / 2;
+                let x = r * Math.cos(ang) + 125;
+                let y = r * Math.sin(ang) + 125;
+                
+                d.style.left = x + 'px';
+                d.style.top = y + 'px';
+                
+                c.appendChild(d);
+            }
 
-<h3 style="color: #34495e ">"¿Estoy con la pareja adecuada?"
-Inicia: viernes 12 de abril</h3>
+            bgIdx = (bgIdx + 1) % bgs.length;
+            document.body.style.background = bgs[bgIdx];
+            document.getElementById('inp').value = '';
+            document.getElementById('inp').focus();
+        }
 
-<h3 style="color: #34495e ">"Fortalece tu amor propio"
-Inicia: jueves 12 de abril </h3>
-<h2 style="color:darkred">SALUD Y EDUCACIÓN A.C.</h2>
-<h3>Playa Revolcadero 345</h3>
-<h3>Col.  Reforma Iztaccíhuatl a la altura 
-del Metro Villa de Cortés</h3>
-<h2>INFORMES:<br> 55.55.79.22.84<br>
- 55.26.72.81.62</h2>
-    </main>
-    <!-- <script src="script.js"></script> -->
+        function msg(txt, type) {
+            let m = document.getElementById('msg');
+            m.textContent = txt;
+            m.className = 'msg show ' + type;
+            setTimeout(() => {
+                m.className = 'msg';
+            }, 1200);
+        }
+
+        function check() {
+            let ans = document.getElementById('inp').value.toUpperCase().trim();
+            
+            if (!ans) {
+                msg('¡Escribe algo!', 'no');
+                return;
+            }
+
+            if (ans === word) {
+                pts++;
+                document.getElementById('pts').textContent = pts;
+                msg('¡Correcto!', 'ok');
+                setTimeout(() => show(), 1200);
+            } else {
+                msg('Incorrecto', 'no');
+            }
+        }
+
+        function giveUp() {
+            errs++;
+            document.getElementById('errs').textContent = errs;
+            msg('La palabra era: ' + word, 'no');
+            setTimeout(() => show(), 2000);
+        }
+
+        function quit() {
+            document.getElementById('final').textContent = pts;
+            document.getElementById('end').classList.add('show');
+        }
+
+        document.getElementById('inp').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') check();
+        });
+
+        show();
+    </script>
 </body>
 </html>
-
-
-
-
-    
-  
-    
- 
