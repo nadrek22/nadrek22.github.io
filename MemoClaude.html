@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria Numérica</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone.js/14.8.49/Tone.min.js"></script>
+    <style>
+        body {
+            background-color: #2d5016;
+            color: black;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .setup-section {
+            background-color: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .game-section {
+            background-color: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .scores {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .score-item {
+            background-color: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 5px;
+            min-width: 120px;
+        }
+        
+        .score-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .number-display {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .input-section {
+            margin: 20px 0;
+        }
+        
+        .digit-input {
+            width: 40px;
+            height: 40px;
+            font-size: 1.5em;
+            text-align: center;
+            margin: 0 5px;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            background-color: rgba(255,255,255,0.9);
+            color: #333;
+        }
+        
+        .digit-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+        
+        .digit-input.correct {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .digit-input.incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        
+        .chart-container {
+            display: none;
+            background-color: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        select, input[type="number"] {
+            padding: 8px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        
+        .status {
+            font-size: 1.2em;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Juego de Memoria Numérica</h1>
+        
+        <div class="setup-section" id="setup">
+            <h2>Configuración</h2>
+            <p>Selecciona el número de cifras para los números aleatorios:</p>
+            <select id="digitCount">
+                <option value="4">4 cifras</option>
+                <option value="5">5 cifras</option>
+                <option value="6">6 cifras</option>
+                <option value="7">7 cifras</option>
+                <option value="8">8 cifras</option>
+                <option value="9">9 cifras</option>
+                <option value="10">10 cifras</option>
+            </select>
+            <br><br>
+            <button onclick="startGame()">Comenzar Juego</button>
+        </div>
+        
+        <div class="game-section" id="gameArea">
+            <div class="scores">
+                <div class="score-item">
+                    <div>Aciertos</div>
+                    <div class="score-value" id="correctScore">0</div>
+                </div>
+                <div class="score-item">
+                    <div>Errores</div>
+                    <div class="score-value" id="errorScore">0</div>
+                </div>
+                <div class="score-item">
+                    <div>% Aciertos</div>
+                    <div class="score-value" id="percentageScore">0%</div>
+                </div>
+            </div>
+            
+            <div class="status" id="status">Preparando número...</div>
+            
+            <div class="number-display" id="numberDisplay"></div>
+            
+            <div class="input-section" id="inputSection"></div>
+            
+            <div>
+                <button onclick="endGame()">Terminar Juego</button>
+                <button onclick="resetGame()">Reiniciar</button>
+                <button onclick="showChart()">Mostrar Avance</button>
+            </div>
+        </div>
+        
+        <div class="chart-container" id="chartContainer">
+            <h3 style="color: #333;">Progreso del Jugador</h3>
+            <canvas id="progressChart"></canvas>
+            <button onclick="hideChart()" style="background-color: #666;">Cerrar Gráfica</button>
+        </div>
+    </div>
+
+    <script>
+        let gameData = {
+            digitCount: 4,
+            currentNumber: '',
+            correctAnswers: 0,
+            errors: 0,
+            gameHistory: [],
+            isGameActive: false,
+            currentInputIndex: 0
+        };
+
+        // Inicializar audio
+        let audioContext;
+        let successSound, errorSound;
+
+        async function initAudio() {
+            try {
+                await Tone.start();
+                
+                // Sonido de acierto (flauta)
+                successSound = new Tone.Oscillator({
+                    frequency: 800,
+                    type: "sine"
+                }).toDestination();
+                
+                // Sonido de error (golpe en madera)
+                errorSound = new Tone.Noise("brown").toDestination();
+                errorSound.volume.value = -10;
+                
+            } catch (error) {
+                console.log("Audio no disponible");
+            }
+        }
+
+        function playSuccessSound() {
+            try {
+                if (successSound) {
+                    successSound.start();
+                    successSound.stop("+0.1");
+                }
+            } catch (error) {
+                console.log("No se pudo reproducir sonido de éxito");
+            }
+        }
+
+        function playErrorSound() {
+            try {
+                if (errorSound) {
+                    errorSound.start();
+                    errorSound.stop("+0.05");
+                }
+            } catch (error) {
+                console.log("No se pudo reproducir sonido de error");
+            }
+        }
+
+        function startGame() {
+            initAudio();
+            gameData.digitCount = parseInt(document.getElementById('digitCount').value);
+            gameData.correctAnswers = 0;
+            gameData.errors = 0;
+            gameData.isGameActive = true;
+            
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('gameArea').style.display = 'block';
+            
+            updateScores();
+            generateNewNumber();
+        }
+
+        function generateNewNumber() {
+            if (!gameData.isGameActive) return;
+            
+            // Generar número aleatorio
+            let min = Math.pow(10, gameData.digitCount - 1);
+            let max = Math.pow(10, gameData.digitCount) - 1;
+            gameData.currentNumber = Math.floor(Math.random() * (max - min + 1) + min).toString();
+            
+            // Mostrar número
+            document.getElementById('status').textContent = 'Memoriza este número:';
+            document.getElementById('numberDisplay').textContent = gameData.currentNumber;
+            
+            // Ocultar después de 0.8 segundos
+            setTimeout(() => {
+                showInputFields();
+            }, 800);
+        }
+
+        function showInputFields() {
+            document.getElementById('status').textContent = 'Ingresa las cifras que recuerdas:';
+            document.getElementById('numberDisplay').textContent = '_'.repeat(gameData.digitCount);
+            
+            // Crear campos de entrada
+            const inputSection = document.getElementById('inputSection');
+            inputSection.innerHTML = '';
+            
+            for (let i = 0; i < gameData.digitCount; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'digit-input';
+                input.maxLength = 1;
+                input.dataset.index = i;
+                input.addEventListener('input', handleDigitInput);
+                input.addEventListener('keydown', handleKeyNavigation);
+                inputSection.appendChild(input);
+            }
+            
+            // Enfocar el primer campo
+            inputSection.children[0].focus();
+            gameData.currentInputIndex = 0;
+        }
+
+        function handleDigitInput(event) {
+            const input = event.target;
+            const index = parseInt(input.dataset.index);
+            const value = input.value;
+            
+            if (value && /^\d$/.test(value)) {
+                const correctDigit = gameData.currentNumber[index];
+                
+                if (value === correctDigit) {
+                    input.classList.add('correct');
+                    input.classList.remove('incorrect');
+                    gameData.correctAnswers++;
+                    playSuccessSound();
+                } else {
+                    input.classList.add('incorrect');
+                    input.classList.remove('correct');
+                    gameData.errors++;
+                    playErrorSound();
+                }
+                
+                updateScores();
+                updateDisplay(index, value);
+                
+                // Mover al siguiente campo
+                if (index < gameData.digitCount - 1) {
+                    const nextInput = document.querySelector(`input[data-index="${index + 1}"]`);
+                    nextInput.focus();
+                    gameData.currentInputIndex = index + 1;
+                } else {
+                    // Completado
+                    setTimeout(() => {
+                        if (gameData.isGameActive) {
+                            generateNewNumber();
+                        }
+                    }, 500);
+                }
+            }
+        }
+
+        function handleKeyNavigation(event) {
+            const index = parseInt(event.target.dataset.index);
+            
+            if (event.key === 'Backspace' && index > 0 && !event.target.value) {
+                const prevInput = document.querySelector(`input[data-index="${index - 1}"]`);
+                prevInput.focus();
+                gameData.currentInputIndex = index - 1;
+            }
+        }
+
+        function updateDisplay(index, digit) {
+            const display = document.getElementById('numberDisplay');
+            const currentText = display.textContent;
+            const newText = currentText.substring(0, index) + digit + currentText.substring(index + 1);
+            display.textContent = newText;
+        }
+
+        function updateScores() {
+            document.getElementById('correctScore').textContent = gameData.correctAnswers;
+            document.getElementById('errorScore').textContent = gameData.errors;
+            
+            const total = gameData.correctAnswers + gameData.errors;
+            const percentage = total > 0 ? Math.round((gameData.correctAnswers / total) * 100) : 0;
+            document.getElementById('percentageScore').textContent = percentage + '%';
+        }
+
+        function endGame() {
+            gameData.isGameActive = false;
+            
+            // Guardar datos del juego
+            const total = gameData.correctAnswers + gameData.errors;
+            const percentage = total > 0 ? Math.round((gameData.correctAnswers / total) * 100) : 0;
+            
+            gameData.gameHistory.push({
+                timestamp: new Date(),
+                correct: gameData.correctAnswers,
+                errors: gameData.errors,
+                percentage: percentage,
+                digits: gameData.digitCount
+            });
+            
+            document.getElementById('status').textContent = 'Juego terminado. ¡Buen trabajo!';
+            document.getElementById('inputSection').innerHTML = '';
+        }
+
+        function resetGame() {
+            gameData.isGameActive = false;
+            document.getElementById('setup').style.display = 'block';
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('chartContainer').style.display = 'none';
+        }
+
+        function showChart() {
+            if (gameData.gameHistory.length === 0) {
+                alert('¡Juega algunas rondas primero para ver tu progreso!');
+                return;
+            }
+            
+            document.getElementById('chartContainer').style.display = 'block';
+            
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Destruir gráfica existente si existe
+            if (window.progressChart) {
+                window.progressChart.destroy();
+            }
+            
+            const labels = gameData.gameHistory.map((game, index) => `Juego ${index + 1}`);
+            const percentageData = gameData.gameHistory.map(game => game.percentage);
+            const correctData = gameData.gameHistory.map(game => game.correct);
+            const errorData = gameData.gameHistory.map(game => game.errors);
+            
+            window.progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '% Aciertos',
+                        data: percentageData,
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                        tension: 0.1
+                    }, {
+                        label: 'Aciertos',
+                        data: correctData,
+                        borderColor: '#2196F3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                        tension: 0.1
+                    }, {
+                        label: 'Errores',
+                        data: errorData,
+                        borderColor: '#f44336',
+                        backgroundColor: 'rgba(244, 67, 54, 0.2)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Progreso del Jugador'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function hideChart() {
+            document.getElementById('chartContainer').style.display = 'none';
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Juego de Memoria Numérica cargado');
+        });
+    </script>
+</body>
+</html>
